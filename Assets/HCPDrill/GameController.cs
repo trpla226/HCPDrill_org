@@ -67,7 +67,7 @@ public class GameController : MonoBehaviour
             deal.Add(card);
             pickedCardsId.Add(card.Id);
         }
-        deal.Sort(Card.CompareById);
+        deal.Sort(Card.CompareBySuitAndNumber);
         return deal;
     }
 

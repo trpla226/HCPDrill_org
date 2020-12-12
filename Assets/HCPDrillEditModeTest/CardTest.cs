@@ -8,19 +8,53 @@ namespace Tests
 {
     public class CardTest
     {
+        readonly Card Club10 = new Card(Suit.Club, 10);
+        readonly Card Diamond10 = new Card(Suit.Diamond, 10);
+        readonly Card Diamond5 = new Card(Suit.Diamond, 5);
+
+        readonly Card SpadeA = new Card(Suit.Spade, 1);
+        readonly Card SpadeK = new Card(Suit.Spade, 13);
+        readonly Card SpadeQ = new Card(Suit.Spade, 12);
+        readonly Card SpadeJ = new Card(Suit.Spade, 11);
+        readonly Card Spade2 = new Card(Suit.Spade, 2);
+
         // A Test behaves as an ordinary method
         [Test]
-        public void CardTestSimplePasses()
+        public void CompareSuitTest()
         {
             // Use the Assert class to test conditions
-            var x = new Card(Suit.Club, 10);
-            var y = new Card(Suit.Diamond, 10);
-            var z = new Card(Suit.Diamond, 5);
 
-            Assert.AreEqual(-1, Card.CompareSuit(x, y));
-            Assert.AreEqual(1, Card.CompareSuit(y, x));
-            Assert.AreEqual(0, Card.CompareSuit(y, z));
+            Assert.AreEqual(-1, Card.CompareBySuit(Club10, Diamond10));
+            Assert.AreEqual(1, Card.CompareBySuit(Diamond10, Club10));
+            Assert.AreEqual(0, Card.CompareBySuit(Diamond10, Diamond5));
             
+        }
+
+        [Test]
+        public void CompareNumberTest()
+        {
+            Assert.AreEqual(5, Card.CompareByScore(Diamond10, Diamond5));
+            Assert.AreEqual(-5, Card.CompareByScore(Diamond5, Diamond10));
+            Assert.AreEqual(0, Card.CompareByScore(Club10, Diamond10));
+
+            Assert.AreEqual(1, Card.CompareByScore(SpadeA, SpadeK));
+            Assert.AreEqual(0, Card.CompareByScore(Diamond10, Club10));
+        }
+
+        [Test]
+        public void ScoreTest()
+        {
+            Assert.AreEqual(12, SpadeA.Rank);
+            Assert.AreEqual(11, SpadeK.Rank);
+            Assert.AreEqual(10, SpadeQ.Rank);
+            Assert.AreEqual(0, Spade2.Rank);
+        }
+
+        [Test]
+        public void CompareBySuitAndNumberTest()
+        {
+            Assert.True(Card.CompareBySuitAndNumber(SpadeA, SpadeK) > 0);
+            Assert.True(Card.CompareBySuitAndNumber(Club10, Diamond10) < 0);
         }
 
         // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use

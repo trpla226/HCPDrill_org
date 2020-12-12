@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static IntExt;
 
 public class Card
 {
@@ -16,6 +17,18 @@ public class Card
         {
             return Mod((int)Suit + Number * 4 - 8 , 52);
         } 
+    }
+
+    /// <summary>
+    /// カードの数字の強さを返す。
+    /// 最強のA=12,
+    /// 次に強いK=11,
+    /// 一番弱い 2 = 0
+    /// </summary>
+    /// <returns></returns>
+    public int Rank
+    {
+        get { return Mod(Number + 11, 13); }
     }
 
     /// <summary>
@@ -49,12 +62,12 @@ public class Card
 
         if (suitDiff != 0) return suitDiff;
 
-        return CompareNumber(x, y);  
+        return CompareByScore(x, y);  
     }
 
-    public static int CompareSuit(Card x, Card y) => x.Suit - y.Suit;
+    public static int CompareBySuit(Card x, Card y) => x.Suit - y.Suit;
 
-    public static int CompareNumber(Card x, Card y) => x.Number - y.Number;
+    public static int CompareByScore(Card x, Card y) => x.Rank - y.Rank;
 
     /// <summary>
     /// カードIDで比較する。
