@@ -4,10 +4,13 @@ using UnityEngine;
 using Michsky.UI.ModernUIPack;
 using System;
 using System.Linq;
+using UnityEngine.UI;
 
 public class AnswerButtonController : MonoBehaviour
 {
     public List<GameObject> buttons;
+
+    public GameController gameController;
 
     // Start is called before the first frame update
     void Start()
@@ -28,9 +31,15 @@ public class AnswerButtonController : MonoBehaviour
     {
         foreach (var i in Enumerable.Range(0, 4))
         {
-            var button = buttons[i].GetComponent<ButtonManagerBasic>();
-            button.buttonText = choices[i].ToString();
-            button.UpdateUI();
+            var answerValue = choices[i];
+
+            var buttonObject = buttons[i];
+            var button = buttonObject.GetComponent<Button>();
+            button.onClick.AddListener(() => gameController.OnAnswer(answerValue));
+
+            var buttonManager = buttonObject.GetComponent<ButtonManagerBasic>();
+            buttonManager.buttonText = answerValue.ToString();
+            buttonManager.UpdateUI();
         }
 
 

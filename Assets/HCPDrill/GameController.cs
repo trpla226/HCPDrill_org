@@ -13,6 +13,8 @@ public class GameController : MonoBehaviour
 
     int seed;
 
+    private Hand Hand;
+
     #region MonoBehaviour Overrides
     // Start is called before the first frame update
     void Start()
@@ -26,7 +28,6 @@ public class GameController : MonoBehaviour
         {
             Debug.Log(card.ToString());
         }
-
 
 
         // 選択肢を用意する
@@ -74,6 +75,9 @@ public class GameController : MonoBehaviour
         }
         deal.Sort(Card.CompareBySuitAndNumber);
         deal.Reverse();
+
+        Hand = new Hand(deal);
+
         return deal;
     }
 
@@ -144,4 +148,15 @@ public class GameController : MonoBehaviour
         }
     }
     #endregion
+
+    public void OnAnswer(int answer)
+    {
+        if ( Hand.HCP == answer)
+        {
+            Debug.Log("正解！");
+        } else
+        {
+            Debug.Log("不正解");
+        }
+    }
 }

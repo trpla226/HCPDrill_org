@@ -23,6 +23,10 @@ public class HandController : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// カードを画面上に配置する
+    /// </summary>
+    /// <param name="cards">カードのリスト</param>
     public void PlaceCards(List<Card> cards)
     {
         var prefab = Resources.Load<GameObject>("Prefabs/CardSprite");
