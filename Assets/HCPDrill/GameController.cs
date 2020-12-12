@@ -27,13 +27,19 @@ public class GameController : MonoBehaviour
             Debug.Log(card.ToString());
         }
 
+
+
         // 選択肢を用意する
         var choices = GenerateChoices(hand.HCP);
         foreach (var choice in choices)
         {
             Debug.Log("choice: " + choice);
         }
-        
+
+        var handController = FindObjectOfType<HandController>();
+
+        handController.PlaceCards(hand.Cards);
+
         var answerButtonController = FindObjectsOfType(typeof(AnswerButtonController))[0] as AnswerButtonController;
 
         answerButtonController.SetChoices(choices);
@@ -67,6 +73,7 @@ public class GameController : MonoBehaviour
             pickedCardsId.Add(card.Id);
         }
         deal.Sort(Card.CompareBySuitAndNumber);
+        deal.Reverse();
         return deal;
     }
 

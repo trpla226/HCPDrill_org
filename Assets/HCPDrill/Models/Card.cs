@@ -104,7 +104,7 @@ public class Card
         return (x + y) % y;
     }
 
-    public string FileName {  get
+    public string ResourceName {  get
         {
             return string.Format("{0}{1:D2}.png", Suit , Number);
         } 
@@ -168,8 +168,7 @@ public class Card
 
     public override string ToString()
     {
-        return FileName;
-        //return Suit + " " + Number;
+        return string.Format("{0}{1:D2}", Suit, Number);
     }
     #endregion
 }
