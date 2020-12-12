@@ -8,9 +8,9 @@ namespace Tests
 {
     public class CardTest
     {
-        readonly Card Club10 = new Card(Suit.Club, 10);
-        readonly Card Diamond10 = new Card(Suit.Diamond, 10);
-        readonly Card Diamond5 = new Card(Suit.Diamond, 5);
+        readonly Card Club10 =      new Card(Suit.Club, 10);
+        readonly Card Diamond10 =   new Card(Suit.Diamond, 10);
+        readonly Card Diamond5 =    new Card(Suit.Diamond, 5);
 
         readonly Card SpadeA = new Card(Suit.Spade, 1);
         readonly Card SpadeK = new Card(Suit.Spade, 13);
@@ -22,12 +22,9 @@ namespace Tests
         [Test]
         public void CompareSuitTest()
         {
-            // Use the Assert class to test conditions
-
             Assert.AreEqual(-1, Card.CompareBySuit(Club10, Diamond10));
             Assert.AreEqual(1, Card.CompareBySuit(Diamond10, Club10));
             Assert.AreEqual(0, Card.CompareBySuit(Diamond10, Diamond5));
-            
         }
 
         [Test]
@@ -55,6 +52,17 @@ namespace Tests
         {
             Assert.True(Card.CompareBySuitAndNumber(SpadeA, SpadeK) > 0);
             Assert.True(Card.CompareBySuitAndNumber(Club10, Diamond10) < 0);
+        }
+
+        [Test]
+        public void HCPTest()
+        {
+            Assert.AreEqual(4, SpadeA.HCP);
+            Assert.AreEqual(3, SpadeK.HCP);
+            Assert.AreEqual(2, SpadeQ.HCP);
+            Assert.AreEqual(1, SpadeJ.HCP);
+            Assert.AreEqual(0, Diamond10.HCP);
+            Assert.AreEqual(0, Spade2.HCP);
         }
 
         // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use

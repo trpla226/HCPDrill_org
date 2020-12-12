@@ -6,12 +6,72 @@ using static IntExt;
 
 public class Card
 {
-    #region Properties
+    /// <summary>
+    /// 最小のハイカードの強さ。つまりJの強さ値
+    /// </summary>
+    public const int SmallestHighCardRank = 9;
 
+    /// <summary>
+    /// カードの番号とHigh Card Pointの対応
+    /// </summary>
+    public static readonly Dictionary<int, int> HCPTable;
+
+    #region Constructors
+    static Card()
+    {
+        HCPTable = new Dictionary<int, int>
+        {
+            {1, 4 }, // A
+            {13, 3 }, // K
+            {12, 2 }, // Q
+            {11, 1 } //J
+        };
+    }
+
+    public Card(Suit suit, int number)
+    {
+        Suit = suit;
+        Number = number;
+    }
+
+    #endregion
+
+    #region Properties
     public Suit Suit { get; }
 
     public int Number { get; }
 
+    /// <summary>
+    /// このカードのHigh Card Point。
+    /// A:4
+    /// K:3
+    /// Q:2
+    /// J:1
+    /// それ以外:0
+    /// </summary>
+    public int HCP
+    {
+        get
+        {
+            return IsHighCard() ?
+                HCPTable[Number] :
+                0;
+        }
+    }
+
+    /// <summary>
+    /// カードがK,Q,J,Aかどうか返す
+    /// </summary>
+    /// <returns>KQJAならtrue,それ以外ならfalse</returns>
+    public bool IsHighCard()
+    {
+        return Rank >= SmallestHighCardRank;
+    }
+
+    /// <summary>
+    /// デッキ内のカード同士で重複の無い番号
+    /// どういうルールで番号をつけるかまだ悩んでる
+    /// </summary>
     public int Id { 
         get
         {
@@ -23,6 +83,8 @@ public class Card
     /// カードの数字の強さを返す。
     /// 最強のA=12,
     /// 次に強いK=11,
+    /// Q = 10
+    /// J = 9
     /// 一番弱い 2 = 0
     /// </summary>
     /// <returns></returns>
@@ -48,6 +110,8 @@ public class Card
         } 
     }
     #endregion
+
+    #region Methods
 
     /// <summary>
     /// スートと番号でカードを比較する
@@ -101,15 +165,11 @@ public class Card
         }
     }
 
-    public Card(Suit suit, int number)
-    {
-        Suit = suit;
-        Number = number;
-    }
 
     public override string ToString()
     {
         return FileName;
         //return Suit + " " + Number;
     }
+    #endregion
 }

@@ -8,7 +8,6 @@ using static IntExt;
 
 public class GameController : MonoBehaviour
 {
-    int answer = 6;
     readonly int randomrange = 10;
     const int dealCount = 13;
 
@@ -21,15 +20,15 @@ public class GameController : MonoBehaviour
         seed = DateTime.Now.Millisecond;
 
         // カードを配る
-        var deal = Deal();
+        var hand = new Hand(Deal());
 
-        foreach(var card in deal)
+        foreach(var card in hand.Cards)
         {
             Debug.Log(card.ToString());
         }
 
         // 選択肢を用意する
-        var choices = GenerateChoices(answer);
+        var choices = GenerateChoices(hand.HCP);
         foreach (var choice in choices)
         {
             Debug.Log("choice: " + choice);
