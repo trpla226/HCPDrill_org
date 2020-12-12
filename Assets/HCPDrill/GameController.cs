@@ -8,6 +8,10 @@ using static IntExt;
 
 public class GameController : MonoBehaviour
 {
+    #region Fields
+    public AudioClip CorrectAnswerAudioClip;
+    public AudioClip WrongAnswerAudioClip;
+
     readonly int randomrange = 10;
     const int dealCount = 13;
 
@@ -15,11 +19,19 @@ public class GameController : MonoBehaviour
 
     private Hand Hand;
 
+    private AudioSource audioSource;
+    #endregion
+
+
     #region MonoBehaviour Overrides
     // Start is called before the first frame update
     void Start()
     {
         seed = DateTime.Now.Millisecond;
+
+        // 音声のロード
+        audioSource = GetComponent<AudioSource>();
+
 
         // カードを配る
         var hand = new Hand(Deal());
@@ -153,10 +165,13 @@ public class GameController : MonoBehaviour
     {
         if ( Hand.HCP == answer)
         {
+            audioSource.clip = CorrectAnswerAudioClip;
             Debug.Log("正解！");
         } else
         {
+            audioSource.clip = WrongAnswerAudioClip;
             Debug.Log("不正解");
         }
+        audioSource.Play();
     }
 }
