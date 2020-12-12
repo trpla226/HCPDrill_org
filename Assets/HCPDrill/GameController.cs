@@ -3,8 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
+using static ImageExt;
 
-using static IntExt;
 
 public class GameController : MonoBehaviour
 {
@@ -20,6 +21,10 @@ public class GameController : MonoBehaviour
     private Hand Hand;
 
     private AudioSource audioSource;
+
+    private AnswerButtonController answerButtonController;
+    private HandController handController;
+    private GameObject correctOverlay;
     #endregion
 
 
@@ -32,29 +37,20 @@ public class GameController : MonoBehaviour
         // 音声のロード
         audioSource = GetComponent<AudioSource>();
 
+        // 参照キャッシュ
+        answerButtonController = FindObjectOfType<AnswerButtonController>();
+        handController = FindObjectOfType<HandController>();
+        correctOverlay = GameObject.Find("Correct");
 
         // カードを配る
         var hand = new Hand(Deal());
 
-        foreach(var card in hand.Cards)
-        {
-            Debug.Log(card.ToString());
-        }
-
+        // カード表示
+        handController.PlaceCards(hand.Cards);
 
         // 選択肢を用意する
         var choices = GenerateChoices(hand.HCP);
-        foreach (var choice in choices)
-        {
-            Debug.Log("choice: " + choice);
-        }
-
-        var handController = FindObjectOfType<HandController>();
-
-        handController.PlaceCards(hand.Cards);
-
-        var answerButtonController = FindObjectsOfType(typeof(AnswerButtonController))[0] as AnswerButtonController;
-
+        // 選択肢表示
         answerButtonController.SetChoices(choices);
     }
 
@@ -89,7 +85,7 @@ public class GameController : MonoBehaviour
         deal.Reverse();
 
         Hand = new Hand(deal);
-
+        answerButtonController.gameObject.SetActive(true);
         return deal;
     }
 
@@ -165,7 +161,9 @@ public class GameController : MonoBehaviour
     {
         if ( Hand.HCP == answer)
         {
+            answerButtonController.gameObject.SetActive(false);
             audioSource.clip = CorrectAnswerAudioClip;
+            correctOverlay.GetComponent<Image>().SetTransparency(1);
             Debug.Log("正解！");
         } else
         {

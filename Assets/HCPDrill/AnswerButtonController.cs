@@ -41,7 +41,5 @@ public class AnswerButtonController : MonoBehaviour
             buttonManager.buttonText = answerValue.ToString();
             buttonManager.UpdateUI();
         }
-
-
     }
 }

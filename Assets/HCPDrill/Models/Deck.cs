@@ -17,7 +17,6 @@ public class Deck
         {
             foreach(int j in Enumerable.Range(1,13))
             {
-                //Debug.Log($"suit:{i}, number:{j}");
                 Cards.Add(new Card((Suit)i, j));
             }
         }
