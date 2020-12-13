@@ -8,6 +8,7 @@ public class HandController : MonoBehaviour
     /// スプライトのリソースが置いてあるフォルダのパス
     /// </summary>
     public readonly string SpritesPath = "PlayingCards/Sprites/";
+    public float initialPosX = -7.0f;
 
     public List<GameObject> Cards;
     // Start is called before the first frame update
@@ -34,7 +35,7 @@ public class HandController : MonoBehaviour
     {
         var prefab = Resources.Load<GameObject>("Prefabs/CardSprite");
 
-        var posX = -6.0f;
+        var posX = initialPosX;
         var posY = 0.59f;
         var posZ = 0f;
         var offsetX = 1.2f;

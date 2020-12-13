@@ -649,6 +649,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a40fe52d1d894fd40b4bdfb61c5a92d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  initialPosX: -7
   Cards: []
 --- !u!224 &260431201
 RectTransform:
@@ -666,8 +667,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -9.55, y: -0}
-  m_SizeDelta: {x: 10.6, y: 12.18}
+  m_AnchoredPosition: {x: -8.92, y: -0.001}
+  m_SizeDelta: {x: 9.812513, y: 10.053789}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &414229825
 GameObject:
