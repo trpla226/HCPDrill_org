@@ -26,6 +26,7 @@ public class GameController : MonoBehaviour
     // 現在の手札
     private Hand Hand;
     bool playerHasAnswered = false;
+    float opacity; // 正解の〇の不透明度
 
     // SE再生
     private AudioSource audioSource;
@@ -46,11 +47,13 @@ public class GameController : MonoBehaviour
         // 音声のロード
         audioSource = GetComponent<AudioSource>();
 
+
         // 参照キャッシュ
         answerButtonController = FindObjectOfType<AnswerButtonController>();
         handController = FindObjectOfType<HandController>();
         correctOverlay = GameObject.Find("Correct");
 
+        // ゲームオーバーになるまで繰り返す
         while (true) { 
             // カードを配る
             var hand = new Hand(Deal());
@@ -73,8 +76,9 @@ public class GameController : MonoBehaviour
 
             // 正解の〇をフェードアウトさせる
             yield return StartCoroutine(UpdateCorrectOverlay());
-            
 
+            // 手札をクリア
+            handController.ClearCards();
         }
     }
 
@@ -87,22 +91,6 @@ public class GameController : MonoBehaviour
         Debug.Log("プレイヤーが回答しました");
     }
 
-    float opacity;
-
-    // Update is called once per frame
-    IEnumerator UpdateCorrectOverlay()
-    {
-        opacity = 1f;
-        var image = correctOverlay.GetComponent<Image>();
-        
-        while(opacity >= 0)
-        {
-            opacity += -0.01f;
-            image.SetOpacity(opacity);
-            
-            yield return 0;
-        }
-    }
     #endregion
 
     
@@ -205,16 +193,33 @@ public class GameController : MonoBehaviour
     {
         if ( Hand.HCP == answer)
         {
+            // ボタンの非表示
             answerButtonController.gameObject.SetActive(false);
-            audioSource.clip = CorrectAnswerAudioClip;
+
+            // 〇を表示
             correctOverlay.GetComponent<Image>().SetOpacity(1);
+
+            audioSource.PlayOneShot(CorrectAnswerAudioClip);
+
             playerHasAnswered = true;
             Debug.Log("正解！");
         } else
         {
-            audioSource.clip = WrongAnswerAudioClip;
+            audioSource.PlayOneShot(WrongAnswerAudioClip);
             Debug.Log("不正解");
         }
-        audioSource.Play();
+    }
+    IEnumerator UpdateCorrectOverlay()
+    {
+        opacity = 1f;
+        var image = correctOverlay.GetComponent<Image>();
+
+        while (opacity >= 0)
+        {
+            opacity += -0.01f;
+            image.SetOpacity(opacity);
+
+            yield return 0;
+        }
     }
 }

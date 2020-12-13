@@ -9,7 +9,7 @@ public class HandController : MonoBehaviour
     /// </summary>
     public readonly string SpritesPath = "PlayingCards/Sprites/";
 
-    public List<GameObject> cards;
+    public List<GameObject> Cards;
     // Start is called before the first frame update
 
     void Start()
@@ -23,11 +23,14 @@ public class HandController : MonoBehaviour
 
     }
 
+
+    // TODO: 配られるたびに毎回インスタンス化しているので、パフォーマンス向上のためにインスタンスを使いまわすようにする。
+
     /// <summary>
     /// カードを画面上に配置する
     /// </summary>
-    /// <param name="cards">カードのリスト</param>
-    public void PlaceCards(List<Card> cards)
+    /// <param name="hand">カードのリスト</param>
+    public void PlaceCards(List<Card> hand)
     {
         var prefab = Resources.Load<GameObject>("Prefabs/CardSprite");
 
@@ -37,7 +40,7 @@ public class HandController : MonoBehaviour
         var offsetX = 1.2f;
         var offsetZ = -1.0f;
 
-        foreach (var card in cards)
+        foreach (var card in hand)
         {
             var obj = Instantiate(prefab);
             obj.transform.position = new Vector3(posX, posY, posZ);
@@ -46,6 +49,17 @@ public class HandController : MonoBehaviour
 
             posX += offsetX; // 次のカードの位置
             posZ += offsetZ;
+
+            Cards.Add(obj);
         }
+    }
+
+    public void ClearCards()
+    {
+        foreach (GameObject card in Cards)
+        {
+            Destroy(card);
+        }
+        Cards.Clear();
     }
 }

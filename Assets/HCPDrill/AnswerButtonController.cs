@@ -35,6 +35,7 @@ public class AnswerButtonController : MonoBehaviour
 
             var buttonObject = buttons[i];
             var button = buttonObject.GetComponent<Button>();
+            button.onClick.RemoveAllListeners();
             button.onClick.AddListener(() => gameController.OnAnswer(answerValue));
 
             var buttonManager = buttonObject.GetComponent<ButtonManagerBasic>();
