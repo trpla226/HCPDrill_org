@@ -27,7 +27,11 @@ public class TimeLimitAreaController : MonoBehaviour
     internal void DisplayPenalty(float wrongAnswerPenaltySeconds)
     {
         var newPenaltyLabel = Instantiate(penaltyLabel, timeLimitArea.transform);
-        newPenaltyLabel.GetComponent<TextMeshProUGUI>().alpha = 1f;
+        newPenaltyLabel.transform.position = new Vector3(-54.3f, 23.7f, 0f);
+
+        var tmp = newPenaltyLabel.GetComponent<TextMeshProUGUI>();
+        tmp.alpha = 1f;
+        tmp.text = "-" + wrongAnswerPenaltySeconds;
         Destroy(newPenaltyLabel, 1f);
     }
 
