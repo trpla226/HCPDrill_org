@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
-using static ImageExt;
+using TMPro;
 
 
 public class GameController : MonoBehaviour
@@ -13,9 +13,9 @@ public class GameController : MonoBehaviour
     // SE
     public AudioClip CorrectAnswerAudioClip;
     public AudioClip WrongAnswerAudioClip;
+    public AudioClip TimeUpAudioClip;
 
-    // 答えの選択肢の範囲
-    readonly int randomrange = 10;
+    public int InitialTimeLimitSeconds = 30;
 
     // 手札枚数
     const int dealCount = 13;
@@ -31,10 +31,13 @@ public class GameController : MonoBehaviour
     // SE再生
     private AudioSource audioSource;
 
+    private float currentTimeLimitSeconds;
+
     // ゲームのモジュール
     private AnswerButtonController answerButtonController;
     private HandController handController;
     private GameObject correctOverlay;
+    private GameObject timeLimitDisplay;
     #endregion
 
 
@@ -44,6 +47,9 @@ public class GameController : MonoBehaviour
     {
         seed = DateTime.Now.Millisecond;
 
+        currentTimeLimitSeconds = InitialTimeLimitSeconds;
+
+
         // 音声のロード
         audioSource = GetComponent<AudioSource>();
 
@@ -52,9 +58,11 @@ public class GameController : MonoBehaviour
         answerButtonController = FindObjectOfType<AnswerButtonController>();
         handController = FindObjectOfType<HandController>();
         correctOverlay = GameObject.Find("Correct");
+        timeLimitDisplay = GameObject.Find("TimeLimit");
 
-        // ゲームオーバーになるまで繰り返す
-        while (true) { 
+
+        // 時間切れになるまで繰り返す
+        while (currentTimeLimitSeconds > 0) { 
             // カードを配る
             var hand = new Hand(Deal());
 
@@ -80,6 +88,16 @@ public class GameController : MonoBehaviour
             // 手札をクリア
             handController.ClearCards();
         }
+
+        // 時間切れになったらゲームオーバー
+        audioSource.PlayOneShot(TimeUpAudioClip);
+    }
+
+    private void Update()
+    {
+        currentTimeLimitSeconds -= Time.deltaTime;
+        int displaySeconds = (int)Math.Max(0, Math.Ceiling(currentTimeLimitSeconds));
+        timeLimitDisplay.GetComponent<TextMeshProUGUI>().SetText(displaySeconds.ToString());
     }
 
     private IEnumerator WaitPlayerToAnswer()
