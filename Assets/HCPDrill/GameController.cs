@@ -17,6 +17,7 @@ public class GameController : MonoBehaviour
     public AudioClip ResultAudioClip;
 
     public int InitialTimeLimitSeconds = 30;
+    public float wrongAnswerPenaltySeconds = 1f;
 
     // 手札枚数
     const int dealCount = 13;
@@ -40,7 +41,10 @@ public class GameController : MonoBehaviour
     private AnswerButtonController answerButtonController;
     private HandController handController;
     private GameObject correctOverlay;
+
+    private GameObject timeLimitArea;
     private GameObject timeLimitDisplay;
+    private GameObject penaltyLabel;
     #endregion
 
 
@@ -61,7 +65,9 @@ public class GameController : MonoBehaviour
         answerButtonController = FindObjectOfType<AnswerButtonController>();
         handController = FindObjectOfType<HandController>();
         correctOverlay = GameObject.Find("Correct");
+        timeLimitArea = GameObject.Find("TimeLimitArea");
         timeLimitDisplay = GameObject.Find("TimeLimit");
+        penaltyLabel = GameObject.Find("Penalty");
 
 
         // 中断されるまで繰り返す
@@ -111,11 +117,17 @@ public class GameController : MonoBehaviour
                     playerHasAnswered = true;
                     Debug.Log("正解！");
                     // 正解の〇をフェードアウトさせる
-                    yield return StartCoroutine(UpdateCorrectOverlay());
+                    StartCoroutine(UpdateCorrectOverlay());
                 }
                 else
                 {
+                    // 失敗時ペナルティ
+                    currentTimeLimitSeconds -= wrongAnswerPenaltySeconds;
                     audioSource.PlayOneShot(WrongAnswerAudioClip);
+                    var newPenaltyLabel = Instantiate(penaltyLabel, timeLimitArea.transform);
+                    newPenaltyLabel.GetComponent<TextMeshProUGUI>().alpha = 1f;
+                    Destroy(newPenaltyLabel, 1f);
+                    
                     Debug.Log("不正解");
                 }
             } while (!correctAnswer);
