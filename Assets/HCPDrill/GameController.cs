@@ -10,18 +10,27 @@ using static ImageExt;
 public class GameController : MonoBehaviour
 {
     #region Fields
+    // SE
     public AudioClip CorrectAnswerAudioClip;
     public AudioClip WrongAnswerAudioClip;
 
+    // 答えの選択肢の範囲
     readonly int randomrange = 10;
+
+    // 手札枚数
     const int dealCount = 13;
 
+    // 乱数シード
     int seed;
 
+    // 現在の手札
     private Hand Hand;
+    bool playerHasAnswered = false;
 
+    // SE再生
     private AudioSource audioSource;
 
+    // ゲームのモジュール
     private AnswerButtonController answerButtonController;
     private HandController handController;
     private GameObject correctOverlay;
@@ -30,7 +39,7 @@ public class GameController : MonoBehaviour
 
     #region MonoBehaviour Overrides
     // Start is called before the first frame update
-    void Start()
+    IEnumerator Start()
     {
         seed = DateTime.Now.Millisecond;
 
@@ -42,22 +51,57 @@ public class GameController : MonoBehaviour
         handController = FindObjectOfType<HandController>();
         correctOverlay = GameObject.Find("Correct");
 
-        // カードを配る
-        var hand = new Hand(Deal());
+        while (true) { 
+            // カードを配る
+            var hand = new Hand(Deal());
 
-        // カード表示
-        handController.PlaceCards(hand.Cards);
+            // カード表示
+            handController.PlaceCards(hand.Cards);
 
-        // 選択肢を用意する
-        var choices = GenerateChoices(hand.HCP);
-        // 選択肢表示
-        answerButtonController.SetChoices(choices);
+            // 正解表示クリア
+            correctOverlay.GetComponent<Image>().SetOpacity(0);
+
+
+            // 選択肢を用意する
+            var choices = GenerateChoices(hand.HCP);
+            // 選択肢表示
+            answerButtonController.SetChoices(choices);
+
+            // プレイヤーが答えるまで待つ
+            playerHasAnswered = false;
+            yield return StartCoroutine(WaitPlayerToAnswer());
+
+            // 正解の〇をフェードアウトさせる
+            yield return StartCoroutine(UpdateCorrectOverlay());
+            
+
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    private IEnumerator WaitPlayerToAnswer()
     {
+        while (!playerHasAnswered)
+        {
+            yield return 0;
+        }
+        Debug.Log("プレイヤーが回答しました");
+    }
+
+    float opacity;
+
+    // Update is called once per frame
+    IEnumerator UpdateCorrectOverlay()
+    {
+        opacity = 1f;
+        var image = correctOverlay.GetComponent<Image>();
         
+        while(opacity >= 0)
+        {
+            opacity += -0.01f;
+            image.SetOpacity(opacity);
+            
+            yield return 0;
+        }
     }
     #endregion
 
@@ -163,7 +207,8 @@ public class GameController : MonoBehaviour
         {
             answerButtonController.gameObject.SetActive(false);
             audioSource.clip = CorrectAnswerAudioClip;
-            correctOverlay.GetComponent<Image>().SetTransparency(1);
+            correctOverlay.GetComponent<Image>().SetOpacity(1);
+            playerHasAnswered = true;
             Debug.Log("正解！");
         } else
         {
