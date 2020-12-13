@@ -27,20 +27,23 @@ public class GameController : MonoBehaviour
 
     // 現在の手札
     private Hand Hand;
-    bool playerHasAnswered = false;
     int answer;
+    private int points;
+    private float currentTimeLimitSeconds;
+    bool playerHasAnswered = false;
 
+    // 表示制御
     float opacity; // 正解の〇の不透明度
 
     // SE再生
     private AudioSource audioSource;
 
-    private float currentTimeLimitSeconds;
 
     // ゲームのモジュール
     private AnswerButtonController answerButtonController;
     private HandController handController;
     private GameObject correctOverlay;
+    private GameObject pointsDisplay;
 
     private TimeLimitAreaController timeLimitAreaController;
     #endregion
@@ -53,7 +56,7 @@ public class GameController : MonoBehaviour
         seed = DateTime.Now.Millisecond;
 
         currentTimeLimitSeconds = InitialTimeLimitSeconds;
-
+        points = 0;
 
         // 音声のロード
         audioSource = GetComponent<AudioSource>();
@@ -63,6 +66,7 @@ public class GameController : MonoBehaviour
         answerButtonController = FindObjectOfType<AnswerButtonController>();
         handController = FindObjectOfType<HandController>();
         correctOverlay = GameObject.Find("Correct");
+        pointsDisplay = GameObject.Find("Points");
         timeLimitAreaController = GameObject.Find("TimeLimitArea").GetComponent<TimeLimitAreaController>();
 
 
@@ -102,18 +106,22 @@ public class GameController : MonoBehaviour
 
                 if (correctAnswer)
                 {
+                    playerHasAnswered = true;
+
+                    points += hand.HighCardCount;
+                    pointsDisplay.GetComponent<TextMeshProUGUI>().text = points.ToString();
+
                     // ボタンの非表示
                     answerButtonController.gameObject.SetActive(false);
 
                     // 〇を表示
                     correctOverlay.GetComponent<Image>().SetOpacity(1);
+                    // 正解の〇をフェードアウトさせる
+                    StartCoroutine(UpdateCorrectOverlay());
 
                     audioSource.PlayOneShot(CorrectAnswerAudioClip);
 
-                    playerHasAnswered = true;
                     Debug.Log("正解！");
-                    // 正解の〇をフェードアウトさせる
-                    StartCoroutine(UpdateCorrectOverlay());
                 }
                 else
                 {
@@ -131,6 +139,7 @@ public class GameController : MonoBehaviour
         // 時間切れになったらゲームオーバー
         audioSource.Stop();
         audioSource.PlayOneShot(TimeUpAudioClip);
+        // TODO: ButtonManagerを取得してInactiveにすることでクリックに反応しなくする
 
         yield return new WaitForSeconds(3.0f);
 
@@ -249,8 +258,6 @@ public class GameController : MonoBehaviour
             return choice;
         }
     }
-    #endregion
-
     public void OnAnswer(int answer)
     {
         this.answer = answer;
@@ -269,4 +276,6 @@ public class GameController : MonoBehaviour
             yield return 0;
         }
     }
+
+    #endregion
 }

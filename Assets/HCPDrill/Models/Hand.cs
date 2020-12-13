@@ -27,4 +27,15 @@ public class Hand
             return Cards.Select(card => card.HCP).Sum();
         }
     }
+
+    /// <summary>
+    /// ハイカードの枚数を数える
+    /// </summary>
+    public int HighCardCount
+    {
+        get
+        {
+            return Cards.Where(card => card.IsHighCard()).Count();
+        }
+    }
 }
