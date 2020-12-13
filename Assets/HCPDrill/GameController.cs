@@ -42,9 +42,7 @@ public class GameController : MonoBehaviour
     private HandController handController;
     private GameObject correctOverlay;
 
-    private GameObject timeLimitArea;
-    private GameObject timeLimitDisplay;
-    private GameObject penaltyLabel;
+    private TimeLimitAreaController timeLimitAreaController;
     #endregion
 
 
@@ -65,9 +63,7 @@ public class GameController : MonoBehaviour
         answerButtonController = FindObjectOfType<AnswerButtonController>();
         handController = FindObjectOfType<HandController>();
         correctOverlay = GameObject.Find("Correct");
-        timeLimitArea = GameObject.Find("TimeLimitArea");
-        timeLimitDisplay = GameObject.Find("TimeLimit");
-        penaltyLabel = GameObject.Find("Penalty");
+        timeLimitAreaController = GameObject.Find("TimeLimitArea").GetComponent<TimeLimitAreaController>();
 
 
         // 中断されるまで繰り返す
@@ -124,9 +120,8 @@ public class GameController : MonoBehaviour
                     // 失敗時ペナルティ
                     currentTimeLimitSeconds -= wrongAnswerPenaltySeconds;
                     audioSource.PlayOneShot(WrongAnswerAudioClip);
-                    var newPenaltyLabel = Instantiate(penaltyLabel, timeLimitArea.transform);
-                    newPenaltyLabel.GetComponent<TextMeshProUGUI>().alpha = 1f;
-                    Destroy(newPenaltyLabel, 1f);
+                    timeLimitAreaController.DisplayPenalty(wrongAnswerPenaltySeconds);
+
                     
                     Debug.Log("不正解");
                 }
@@ -147,8 +142,7 @@ public class GameController : MonoBehaviour
     {
         // カウントダウン＆残り時間更新
         currentTimeLimitSeconds -= Time.deltaTime;
-        int displaySeconds = (int)Math.Max(0, Math.Ceiling(currentTimeLimitSeconds));
-        timeLimitDisplay.GetComponent<TextMeshProUGUI>().SetText(displaySeconds.ToString());
+        timeLimitAreaController.UpdateTimeLimit(currentTimeLimitSeconds);
     }
 
     private IEnumerator WaitPlayerToAnswer()
