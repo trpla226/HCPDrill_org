@@ -133,19 +133,15 @@ public class GameController : MonoBehaviour
 
     private void Update()
     {
+        // カウントダウン＆残り時間更新
         currentTimeLimitSeconds -= Time.deltaTime;
         int displaySeconds = (int)Math.Max(0, Math.Ceiling(currentTimeLimitSeconds));
         timeLimitDisplay.GetComponent<TextMeshProUGUI>().SetText(displaySeconds.ToString());
-
-        if(currentTimeLimitSeconds < 0)
-        {
-            StopCoroutine("WaitPlayerToAnswer");
-        }
     }
 
     private IEnumerator WaitPlayerToAnswer()
     {
-        while (!playerHasAnswered)
+        while (!playerHasAnswered && currentTimeLimitSeconds > 0)
         {
             yield return 0;
         }
