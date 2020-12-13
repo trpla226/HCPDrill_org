@@ -175,8 +175,7 @@ public class GameController : MonoBehaviour
     {
         seed++;
         UnityEngine.Random.InitState(seed);
-        var diff = (int)(UnityEngine.Random.value * randomrange - (randomrange / 2));
-        var choice = answer + diff;
+        var choice = UnityEngine.Random.Range(0, 37);
         if (!choice.IsValidHCP()
             || choices.Contains(choice))
         {
