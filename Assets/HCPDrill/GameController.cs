@@ -14,6 +14,7 @@ public class GameController : MonoBehaviour
     public AudioClip CorrectAnswerAudioClip;
     public AudioClip WrongAnswerAudioClip;
     public AudioClip TimeUpAudioClip;
+    public AudioClip ResultAudioClip;
 
     public int InitialTimeLimitSeconds = 30;
 
@@ -123,6 +124,11 @@ public class GameController : MonoBehaviour
         // 時間切れになったらゲームオーバー
         audioSource.Stop();
         audioSource.PlayOneShot(TimeUpAudioClip);
+
+        yield return new WaitForSeconds(3.0f);
+
+        audioSource.clip = ResultAudioClip;
+        audioSource.Play();
     }
 
     private void Update()
