@@ -28,7 +28,7 @@ public class GameController : MonoBehaviour
     // 現在の手札
     private Hand Hand;
     int answer;
-    private int points;
+    private int score;
     private float currentTimeLimitSeconds;
     bool playerHasAnswered = false;
 
@@ -42,6 +42,7 @@ public class GameController : MonoBehaviour
     // ゲームのモジュール
     private AnswerButtonController answerButtonController;
     private HandController handController;
+    private ScoreAreaController scoreAreaController;
     private GameObject correctOverlay;
     private GameObject pointsDisplay;
 
@@ -56,7 +57,7 @@ public class GameController : MonoBehaviour
         seed = DateTime.Now.Millisecond;
 
         currentTimeLimitSeconds = InitialTimeLimitSeconds;
-        points = 0;
+        score = 0;
 
         // 音声のロード
         audioSource = GetComponent<AudioSource>();
@@ -68,6 +69,8 @@ public class GameController : MonoBehaviour
         correctOverlay = GameObject.Find("Correct");
         pointsDisplay = GameObject.Find("Points");
         timeLimitAreaController = GameObject.Find("TimeLimitArea").GetComponent<TimeLimitAreaController>();
+        scoreAreaController = GameObject.Find("ScoreArea").GetComponent<ScoreAreaController>();
+        
 
 
         // 中断されるまで繰り返す
@@ -108,8 +111,9 @@ public class GameController : MonoBehaviour
                 {
                     playerHasAnswered = true;
 
-                    points += hand.HighCardCount;
-                    pointsDisplay.GetComponent<TextMeshProUGUI>().text = points.ToString();
+                    var pointsGain = hand.HighCardCount;
+                    score += pointsGain;
+                    scoreAreaController.UpdateScore(score);
 
                     // ボタンの非表示
                     answerButtonController.gameObject.SetActive(false);
@@ -118,6 +122,8 @@ public class GameController : MonoBehaviour
                     correctOverlay.GetComponent<Image>().SetOpacity(1);
                     // 正解の〇をフェードアウトさせる
                     StartCoroutine(UpdateCorrectOverlay());
+
+                    scoreAreaController.DisplayGain(pointsGain);
 
                     audioSource.PlayOneShot(CorrectAnswerAudioClip);
 
