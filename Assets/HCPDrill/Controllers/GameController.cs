@@ -145,7 +145,7 @@ public class GameController : MonoBehaviour
         // 時間切れになったらゲームオーバー
         audioSource.Stop();
         audioSource.PlayOneShot(TimeUpAudioClip);
-        // TODO: ButtonManagerを取得してInactiveにすることでクリックに反応しなくする
+        answerButtonController.Disable();
 
         yield return new WaitForSeconds(3.0f);
 
@@ -264,11 +264,21 @@ public class GameController : MonoBehaviour
             return choice;
         }
     }
+
+    /// <summary>
+    /// ユーザが（ボタンをクリックするなどして）解答
+    /// </summary>
+    /// <param name="answer"></param>
     public void OnAnswer(int answer)
     {
         this.answer = answer;
         playerHasAnswered = true;
     }
+
+    /// <summary>
+    /// 正解の〇表示をフェードアウトさせる（Update1回分の処理）
+    /// </summary>
+    /// <returns></returns>
     IEnumerator UpdateCorrectOverlay()
     {
         opacity = 1f;
