@@ -44,7 +44,6 @@ public class GameController : MonoBehaviour
     private HandController handController;
     private ScoreAreaController scoreAreaController;
     private GameObject correctOverlay;
-    private GameObject pointsDisplay;
 
     private TimeLimitAreaController timeLimitAreaController;
     #endregion
@@ -67,7 +66,6 @@ public class GameController : MonoBehaviour
         answerButtonController = FindObjectOfType<AnswerButtonController>();
         handController = FindObjectOfType<HandController>();
         correctOverlay = GameObject.Find("Correct");
-        pointsDisplay = GameObject.Find("Points");
         timeLimitAreaController = GameObject.Find("TimeLimitArea").GetComponent<TimeLimitAreaController>();
         scoreAreaController = GameObject.Find("ScoreArea").GetComponent<ScoreAreaController>();
         
