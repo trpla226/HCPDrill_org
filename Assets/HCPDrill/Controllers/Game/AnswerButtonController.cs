@@ -49,7 +49,7 @@ public class AnswerButtonController : MonoBehaviour
 
     /// <summary>
     /// ボタンを操作不能にする
-    /// 半透明でリップルも出ないようにする。
+    /// 半透明でリップルも出ないようにする。git 
     /// </summary>
     internal void Disable()
     {

@@ -4,5 +4,11 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/HCPDrill/Scenes/Game.unity
+    guid: 0d6b0b23cac617b47947bee88acd2c85
+  - enabled: 1
+    path: Assets/HCPDrill/Scenes/Title.unity
+    guid: 9bc6511b106c6ec4b9047258e2f3159c
   m_configObjects: {}

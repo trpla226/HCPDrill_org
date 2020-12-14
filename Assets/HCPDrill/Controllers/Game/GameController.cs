@@ -5,7 +5,8 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-
+using Michsky.UI.ModernUIPack;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
@@ -145,6 +146,12 @@ public class GameController : MonoBehaviour
         audioSource.PlayOneShot(TimeUpAudioClip);
         answerButtonController.Disable();
 
+        var modalWindow = GameObject.Find("ResultModal").GetComponent<ModalWindowManager>();
+        modalWindow.titleText = "Result";
+        modalWindow.descriptionText = "Score: 15 \nMiss: 0";
+        modalWindow.UpdateUI();
+        modalWindow.OpenWindow();
+
         yield return new WaitForSeconds(3.0f);
 
         audioSource.clip = ResultAudioClip;
@@ -171,6 +178,12 @@ public class GameController : MonoBehaviour
 
     
     #region Methods
+    public void LoadTitle()
+    {
+        SceneManager.LoadScene("Title");
+    }
+
+
     /// <summary>
     /// カードを配る
     /// </summary>
