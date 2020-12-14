@@ -148,7 +148,7 @@ public class GameController : MonoBehaviour
 
         var modalWindow = GameObject.Find("ResultModal").GetComponent<ModalWindowManager>();
         modalWindow.titleText = "Result";
-        modalWindow.descriptionText = "Score: 15 \nMiss: 0";
+        modalWindow.descriptionText = $"Score: {score}\nMiss: 0";
         modalWindow.UpdateUI();
         modalWindow.OpenWindow();
 
