@@ -9,6 +9,7 @@ public class TimeLimitAreaController : MonoBehaviour
 {
     private GameObject timeLimitArea;
     private GameObject penaltyLabel;
+    private GameObject penaltySpawn;
     private ProgressBar progressBar;
 
     // Start is called before the first frame update
@@ -16,6 +17,7 @@ public class TimeLimitAreaController : MonoBehaviour
     {
         timeLimitArea = GameObject.Find("TimeLimitArea");
         penaltyLabel = GameObject.Find("Penalty");
+        penaltySpawn = transform.Find("PenaltySpawn").gameObject;
         progressBar = transform.Find("TimeLimitBar").GetComponent<ProgressBar>();
     }
 
@@ -27,7 +29,7 @@ public class TimeLimitAreaController : MonoBehaviour
 
     internal void DisplayPenalty(float wrongAnswerPenaltySeconds)
     {
-        var newPenaltyLabel = Instantiate(penaltyLabel, timeLimitArea.transform);
+        var newPenaltyLabel = Instantiate(penaltyLabel, penaltySpawn.transform);
 
         var tmp = newPenaltyLabel.GetComponent<TextMeshProUGUI>();
         tmp.alpha = 1f;

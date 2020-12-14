@@ -8,6 +8,7 @@ public class ScoreAreaController : MonoBehaviour
     private GameObject scoreArea;
     private GameObject points;
     private GameObject gainLabel;
+    private GameObject gainSpawn;
 
     // Start is called before the first frame update
     void Start()
@@ -15,6 +16,7 @@ public class ScoreAreaController : MonoBehaviour
         scoreArea = GameObject.Find("ScoreArea");
         points = GameObject.Find("Points");
         gainLabel = GameObject.Find("PointsGain");
+        gainSpawn = transform.Find("GainSpawn").gameObject;
     }
 
     // Update is called once per frame
@@ -29,7 +31,7 @@ public class ScoreAreaController : MonoBehaviour
     /// <param name="gain">獲得したポイント</param>
     internal void DisplayGain(int gain)
     {
-        var newGainLabel = Instantiate(gainLabel, scoreArea.transform);
+        var newGainLabel = Instantiate(gainLabel, gainSpawn.transform);
 
         var tmp = newGainLabel.GetComponent<TextMeshProUGUI>();
         tmp.alpha = 1f;
