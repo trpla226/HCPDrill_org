@@ -3,5 +3,5 @@ using System.Collections.Generic;
 
 public enum Suit
 {
-    Club, Diamond, Heart, Spade
+    Diamond, Club, Heart, Spade
 }

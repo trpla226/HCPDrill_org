@@ -22,8 +22,8 @@ namespace Tests
         [Test]
         public void CompareSuitTest()
         {
-            Assert.AreEqual(-1, Card.CompareBySuit(Club10, Diamond10));
-            Assert.AreEqual(1, Card.CompareBySuit(Diamond10, Club10));
+            Assert.AreEqual(1, Card.CompareBySuit(Club10, Diamond10));
+            Assert.AreEqual(-1, Card.CompareBySuit(Diamond10, Club10));
             Assert.AreEqual(0, Card.CompareBySuit(Diamond10, Diamond5));
         }
 
@@ -51,7 +51,7 @@ namespace Tests
         public void CompareBySuitAndNumberTest()
         {
             Assert.True(Card.CompareBySuitAndNumber(SpadeA, SpadeK) > 0);
-            Assert.True(Card.CompareBySuitAndNumber(Club10, Diamond10) < 0);
+            Assert.True(Card.CompareBySuitAndNumber(Club10, Diamond10) > 0);
         }
 
         [Test]
