@@ -47,6 +47,9 @@ public class GameController : MonoBehaviour
     private GameObject correctOverlay;
 
     private TimeLimitAreaController timeLimitAreaController;
+    private bool answerIsCorrect;
+
+
     #endregion
 
 
@@ -59,9 +62,8 @@ public class GameController : MonoBehaviour
         currentTimeLimitSeconds = InitialTimeLimitSeconds;
         score = 0;
 
-        // 音声のロード
+        // 音声
         audioSource = GetComponent<AudioSource>();
-
 
         // 参照キャッシュ
         answerButtonController = FindObjectOfType<AnswerButtonController>();
@@ -70,30 +72,23 @@ public class GameController : MonoBehaviour
         timeLimitAreaController = GameObject.Find("TimeLimitArea").GetComponent<TimeLimitAreaController>();
         scoreAreaController = GameObject.Find("ScoreArea").GetComponent<ScoreAreaController>();
         
-
-
         // 中断されるまで繰り返す
         while (currentTimeLimitSeconds > 0) {
+
+            // カードを配る
+            Hand = Deal();
 
             // 手札をクリア
             handController.ClearCards();
 
-            // カードを配る
-            var hand = new Hand(Deal());
-
             // カード表示
-            handController.PlaceCards(hand.Cards);
-
-            // 正解表示クリア
-            correctOverlay.GetComponent<Image>().SetOpacity(0);
-
+            handController.PlaceCards(Hand.Cards);
 
             // 選択肢を用意する
-            var choices = GenerateChoices(hand.HCP);
+            var choices = GenerateChoices(Hand.HCP);
             // 選択肢表示
             answerButtonController.SetChoices(choices);
 
-            bool correctAnswer;
             do
             {
                 // プレイヤーが答えるまで待つ
@@ -104,29 +99,20 @@ public class GameController : MonoBehaviour
                 // 中断時はdo-whileを抜ける
                 if (!playerHasAnswered) break;
 
-                correctAnswer = Hand.HCP == answer;
+                answerIsCorrect = Hand.HCP == answer;
 
-                if (correctAnswer)
+                if (answerIsCorrect)
                 {
                     playerHasAnswered = true;
 
-                    var pointsGain = hand.HighCardCount;
-                    score += pointsGain;
-                    scoreAreaController.UpdateScore(score);
-
-                    // ボタンの非表示
-                    answerButtonController.gameObject.SetActive(false);
+                    GainScore(Hand.HighCardCount);
 
                     // 〇を表示
                     correctOverlay.GetComponent<Image>().SetOpacity(1);
                     // 正解の〇をフェードアウトさせる
                     StartCoroutine(UpdateCorrectOverlay());
 
-                    scoreAreaController.DisplayGain(pointsGain);
-
                     audioSource.PlayOneShot(CorrectAnswerAudioClip);
-
-                    Debug.Log("正解！");
                 }
                 else
                 {
@@ -134,11 +120,8 @@ public class GameController : MonoBehaviour
                     currentTimeLimitSeconds -= wrongAnswerPenaltySeconds;
                     audioSource.PlayOneShot(WrongAnswerAudioClip);
                     timeLimitAreaController.DisplayPenalty(wrongAnswerPenaltySeconds);
-
-                    
-                    Debug.Log("不正解");
                 }
-            } while (!correctAnswer);
+            } while (ShouldProceedToNextTurn());
         }
 
         // 時間切れになったらゲームオーバー
@@ -156,6 +139,18 @@ public class GameController : MonoBehaviour
 
         audioSource.clip = ResultAudioClip;
         audioSource.Play();
+    }
+
+    private bool ShouldProceedToNextTurn()
+    {
+        return !answerIsCorrect;
+    }
+
+    private void GainScore(int gain)
+    {
+        score += gain;
+        scoreAreaController.UpdateScore(score);
+        scoreAreaController.DisplayGain(gain);
     }
 
     private void Update()
@@ -187,11 +182,12 @@ public class GameController : MonoBehaviour
     /// <summary>
     /// カードを配る
     /// </summary>
-    /// <returns></returns>
-    List<Card> Deal()
+    /// <returns>手札</returns>
+    Hand Deal()
     {
         var deck = new Deck();
 
+        // 既に配ったカード
         var pickedCardsId = new HashSet<int>();
 
         var deal = new List<Card>();
@@ -202,12 +198,11 @@ public class GameController : MonoBehaviour
             deal.Add(card);
             pickedCardsId.Add(card.Id);
         }
+
         deal.Sort(Card.CompareBySuitAndNumber);
         deal.Reverse();
 
-        Hand = new Hand(deal);
-        answerButtonController.gameObject.SetActive(true);
-        return deal;
+        return new Hand(deal);
     }
 
     /// <summary>
@@ -254,7 +249,7 @@ public class GameController : MonoBehaviour
     }
 
     /// <summary>
-    /// ユーザが選択する答えの候補を返す。基準からそれなりに近い値をから選ぶ。
+    /// ユーザが選択する答えの候補を返す。
     /// 負の数や37以上や他の選択肢と重複していた場合は、有効な数が出るまで引き直す
     /// </summary>
     /// <param name="answer">正しい答え</param>
