@@ -20,6 +20,7 @@ public class GameController : MonoBehaviour
     public int InitialTimeLimitSeconds = 30;
     public float wrongAnswerPenaltySeconds = 1f;
 
+
     // 現在の手札
     private Session session;
     bool playerHasAnswered = false;
@@ -58,9 +59,11 @@ public class GameController : MonoBehaviour
             timeLimitAreaController,
             InitialTimeLimitSeconds,
             wrongAnswerPenaltySeconds);
+
         
         // 中断されるまで繰り返す
         while (session.CurrentTimeLimitSeconds > 0) {
+            session.elapsedTimeInTurn = 0f;
 
             // カードを配る
             session.Deal();
@@ -90,7 +93,7 @@ public class GameController : MonoBehaviour
                 {
                     playerHasAnswered = true;
 
-                    session.GainScore();
+                    session.rule.OnCorrectAnswer();
 
                     HUDController.DisplaycorrectOverlay();
 
@@ -137,6 +140,7 @@ public class GameController : MonoBehaviour
     {
         while (!playerHasAnswered && session.CurrentTimeLimitSeconds > 0)
         {
+            session.elapsedTimeInTurn += Time.deltaTime;
             yield return 0;
         }
         Debug.Log("プレイヤーが回答しました");
@@ -159,7 +163,6 @@ public class GameController : MonoBehaviour
         session.Answer(answer);
         playerHasAnswered = true;
     }
-
 
     #endregion
 }

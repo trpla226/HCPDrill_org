@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -32,7 +33,6 @@ public class HUDController : MonoBehaviour
         // 正解の〇をフェードアウトさせる
         StartCoroutine(UpdateCorrectOverlay());
     }
-
 
     /// <summary>
     /// 正解の〇表示をフェードアウトさせる（Update1回分の処理）

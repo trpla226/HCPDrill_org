@@ -1,13 +1,12 @@
 ﻿using Michsky.UI.ModernUIPack;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
 public class TimeLimitAreaController : MonoBehaviour
 {
-    private GameObject timeLimitArea;
+    private Color gainColor;
+
     private GameObject penaltyLabel;
     private GameObject penaltySpawn;
     private ProgressBar progressBar;
@@ -15,7 +14,9 @@ public class TimeLimitAreaController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        timeLimitArea = GameObject.Find("TimeLimitArea");
+        // ペナルティではなくボーナスの時のテキスト色
+        gainColor = "#00B915".ToColor();
+
         penaltyLabel = GameObject.Find("Penalty");
         penaltySpawn = transform.Find("PenaltySpawn").gameObject;
         progressBar = transform.Find("TimeLimitBar").GetComponent<ProgressBar>();
@@ -27,14 +28,26 @@ public class TimeLimitAreaController : MonoBehaviour
         
     }
 
-    internal void DisplayPenalty(float wrongAnswerPenaltySeconds)
+    internal void DisplayPenalty(float penaltySeconds)
     {
         var newPenaltyLabel = Instantiate(penaltyLabel, penaltySpawn.transform);
-
         var tmp = newPenaltyLabel.GetComponent<TextMeshProUGUI>();
-        tmp.alpha = 1f;
-        tmp.text = "-" + wrongAnswerPenaltySeconds;
         Destroy(newPenaltyLabel, 1f);
+        
+        tmp.alpha = 1f;
+
+        if (penaltySeconds > 0)
+        {
+
+            tmp.text = "-" + penaltySeconds;
+        } else
+        {
+            var displaySec = - penaltySeconds;
+
+            tmp.color = gainColor;
+            tmp.alpha = 1f;
+            tmp.text = "+" + ((int)Math.Ceiling(displaySec)).ToString();
+        }
     }
 
     internal void UpdateTimeLimit(float currentTimeLimitSeconds)

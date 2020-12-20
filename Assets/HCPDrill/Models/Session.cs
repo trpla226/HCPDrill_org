@@ -17,6 +17,9 @@ public class Session
         }
     }
 
+    internal float elapsedTimeInTurn;
+
+
     internal Rule rule;
 
     // 手札枚数
@@ -154,11 +157,19 @@ public class Session
         } 
     }
 
-    internal void GainScore()
+    internal void GainScore(int gain)
     {
-        var gain = Hand.HighCardCount;
         Score += gain;
         scoreAreaController.UpdateScore(Score);
         scoreAreaController.DisplayGain(gain);
+    }
+
+    /// <summary>
+    /// 持ち時間から減らす。負の値を渡すことで増やすことも可能。
+    /// </summary>
+    internal void LoseTimeLimit(float penaltyTimeSecond)
+    {
+        currentTimeLimitSeconds -= penaltyTimeSecond;
+        timeLimitAreaController.DisplayPenalty(penaltyTimeSecond);
     }
 }
