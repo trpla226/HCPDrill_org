@@ -17,14 +17,15 @@ public class Session
         }
     }
 
+    internal Rule rule;
+
     // 手札枚数
     private readonly int dealCount = 13;
 
-    private float currentTimeLimitSeconds;
-    private readonly float wrongAnswerPenaltySeconds;
+    internal float currentTimeLimitSeconds;
 
     private readonly ScoreAreaController scoreAreaController;
-    private readonly TimeLimitAreaController timeLimitAreaController;
+    internal readonly TimeLimitAreaController timeLimitAreaController;
 
     private int answer;
     // 乱数シード
@@ -35,14 +36,17 @@ public class Session
         int initialTimeLimitSeconds,
         float wrongAnswerPenaltySeconds) 
     {
+        rule = new Rule(this, wrongAnswerPenaltySeconds);
+
         this.scoreAreaController = scoreAreaController;
         this.timeLimitAreaController = timeLimitAreaController;
         currentTimeLimitSeconds = initialTimeLimitSeconds;
-        this.wrongAnswerPenaltySeconds = wrongAnswerPenaltySeconds;
+        
 
         Score = 0;
 
         seed = DateTime.Now.Millisecond;
+
 
     }
 
@@ -141,12 +145,6 @@ public class Session
     }
 
 
-    internal void OnWrongAnswer()
-    {
-        currentTimeLimitSeconds -= wrongAnswerPenaltySeconds;
-        timeLimitAreaController.DisplayPenalty(wrongAnswerPenaltySeconds);
-    }
-
     internal void Answer(int answer) {
         this.answer = answer;
     }
@@ -157,11 +155,6 @@ public class Session
         } 
     }
 
-    internal bool ShouldProceedToNextTurn()
-    {
-        return !AnswerIsCorrect;
-    }
-
     internal void GainScore()
     {
         var gain = Hand.HighCardCount;
@@ -169,6 +162,4 @@ public class Session
         scoreAreaController.UpdateScore(Score);
         scoreAreaController.DisplayGain(gain);
     }
-
-
 }

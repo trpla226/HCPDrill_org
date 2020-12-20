@@ -107,9 +107,11 @@ public class GameController : MonoBehaviour
                 else
                 {
                     // 失敗時ペナルティ
+                    session.rule.OnWrongAnswer();
+
                     audioSource.PlayOneShot(WrongAnswerAudioClip);
                 }
-            } while (session.ShouldProceedToNextTurn());
+            } while (!session.rule.ShouldProceedToNextTurn());
         }
 
         // 時間切れになったらゲームオーバー
