@@ -24,18 +24,15 @@ public class GameController : MonoBehaviour
     private Session session;
     bool playerHasAnswered = false;
 
-    // 表示制御
-    float opacity; // 正解の〇の不透明度
-
     // SE再生
     private AudioSource audioSource;
 
 
     // ゲームのモジュール
+    private HUDController HUDController;
     private AnswerButtonController answerButtonController;
     private HandController handController;
     private ScoreAreaController scoreAreaController;
-    private GameObject correctOverlay;
 
     private TimeLimitAreaController timeLimitAreaController;
 
@@ -48,8 +45,7 @@ public class GameController : MonoBehaviour
     IEnumerator Start()
     {
         // 参照キャッシュ
-        correctOverlay = GameObject.Find("Correct");
-
+        HUDController = GameObject.Find("HUD").GetComponent<HUDController>();
         answerButtonController = FindObjectOfType<AnswerButtonController>();
         handController = FindObjectOfType<HandController>();
         timeLimitAreaController = GameObject.Find("TimeLimitArea").GetComponent<TimeLimitAreaController>();
@@ -96,11 +92,7 @@ public class GameController : MonoBehaviour
 
                     session.GainScore();
 
-                    // この辺HUD関連オブジェクトにまとめる
-                    // 〇を表示
-                    correctOverlay.GetComponent<Image>().SetOpacity(1);
-                    // 正解の〇をフェードアウトさせる
-                    StartCoroutine(UpdateCorrectOverlay());
+                    HUDController.DisplaycorrectOverlay();
 
                     audioSource.PlayOneShot(CorrectAnswerAudioClip);
                 }
@@ -150,6 +142,9 @@ public class GameController : MonoBehaviour
         Debug.Log("プレイヤーが回答しました");
     }
 
+    /// <summary>
+    /// タイトル画面への遷移
+    /// </summary>
     public void LoadTitle()
     {
         SceneManager.LoadScene("Title");
@@ -165,23 +160,6 @@ public class GameController : MonoBehaviour
         playerHasAnswered = true;
     }
 
-    /// <summary>
-    /// 正解の〇表示をフェードアウトさせる（Update1回分の処理）
-    /// </summary>
-    /// <returns></returns>
-    IEnumerator UpdateCorrectOverlay()
-    {
-        opacity = 1f;
-        var image = correctOverlay.GetComponent<Image>();
-
-        while (opacity >= 0)
-        {
-            opacity += -0.01f;
-            image.SetOpacity(opacity);
-
-            yield return 0;
-        }
-    }
 
     #endregion
 }

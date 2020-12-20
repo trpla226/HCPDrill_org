@@ -10,13 +10,13 @@ public class Rule
     internal Func<bool> ShouldProceedToNextTurn;
     internal Action OnWrongAnswer;
 
+    private Session session;
 
     public Rule(Session session, float wrongAnswerPenaltySeconds)
     {
-        ShouldProceedToNextTurn = () => 
-        {
-            return session.AnswerIsCorrect;
-        };
+        this.session = session;
+
+        ShouldProceedToNextTurn = Always;
 
         OnWrongAnswer = () =>
         {
@@ -26,4 +26,7 @@ public class Rule
 
     }
 
+    private bool AnswerIsCorrect() => session.AnswerIsCorrect;
+
+    private bool Always() => true;
 }

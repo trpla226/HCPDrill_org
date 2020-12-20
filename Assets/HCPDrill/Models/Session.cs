@@ -144,7 +144,6 @@ public class Session
         }
     }
 
-
     internal void Answer(int answer) {
         this.answer = answer;
     }
