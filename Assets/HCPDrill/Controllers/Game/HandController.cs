@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class HandController : MonoBehaviour
@@ -8,7 +9,7 @@ public class HandController : MonoBehaviour
     /// スプライトのリソースが置いてあるフォルダのパス
     /// </summary>
     public readonly string SpritesPath = "PlayingCards/Sprites/";
-    public float initialPosX = -7.0f;
+    public float initialPosX = -8.0f;
 
     public List<GameObject> Cards;
     // Start is called before the first frame update
@@ -33,25 +34,35 @@ public class HandController : MonoBehaviour
     /// <param name="hand">カードのリスト</param>
     public void PlaceCards(List<Card> hand)
     {
-        var prefab = Resources.Load<GameObject>("Prefabs/CardSprite");
+        var prefab = Resources.Load<GameObject>("Prefabs/Card");
+        var handObject = GameObject.Find("Hand");
 
         var posX = initialPosX;
         var posY = 0.59f;
         var posZ = 0f;
-        var offsetX = 1.2f;
-        var offsetZ = -1.0f;
+
+        // カード一枚あたりずらす量
+        var deltaX = 1.2f;
+        var deltaZ = -1.0f;
 
         foreach (var card in hand)
         {
-            var obj = Instantiate(prefab);
-            obj.transform.position = new Vector3(posX, posY, posZ);
+            var cardObject = Instantiate(prefab, handObject.transform);
+            cardObject.transform.position = new Vector3(posX, posY, posZ);
 
-            obj.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(SpritesPath + card.ToString());
+            var sprite = cardObject.transform.Find("CardSprite");
+            sprite.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(SpritesPath + card.ToString());
 
-            posX += offsetX; // 次のカードの位置
-            posZ += offsetZ;
+            var pointStr = card.IsHighCard() ? card.HCP.ToString() : string.Empty;
+            var pointText = cardObject.transform.Find("Canvas").transform.Find("PointText");
+            pointText.GetComponent<TextMeshProUGUI>().text = pointStr;
+            pointText.gameObject.SetActive(false);
+            
 
-            Cards.Add(obj);
+            posX += deltaX; // 次のカードの位置
+            posZ += deltaZ; // 重なり順
+
+            Cards.Add(cardObject);
         }
     }
 
