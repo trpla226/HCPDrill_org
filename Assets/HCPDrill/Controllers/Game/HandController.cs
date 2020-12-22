@@ -8,7 +8,6 @@ public class HandController : MonoBehaviour
     /// <summary>
     /// スプライトのリソースが置いてあるフォルダのパス
     /// </summary>
-    public readonly string SpritesPath = "PlayingCards/Sprites/";
     public float initialPosX = -8.0f;
 
     public List<GameObject> Cards;
@@ -25,7 +24,6 @@ public class HandController : MonoBehaviour
 
     }
 
-
     // TODO: 配られるたびに毎回インスタンス化しているので、パフォーマンス向上のためにインスタンスを使いまわすようにする。
 
     /// <summary>
@@ -35,7 +33,6 @@ public class HandController : MonoBehaviour
     public void PlaceCards(List<Card> hand)
     {
         var prefab = Resources.Load<GameObject>("Prefabs/Card");
-        var handObject = GameObject.Find("Hand");
 
         var posX = initialPosX;
         var posY = 0.59f;
@@ -47,17 +44,12 @@ public class HandController : MonoBehaviour
 
         foreach (var card in hand)
         {
-            var cardObject = Instantiate(prefab, handObject.transform);
+            var cardObject = Instantiate(prefab, transform);
             cardObject.transform.position = new Vector3(posX, posY, posZ);
 
-            var sprite = cardObject.transform.Find("CardSprite");
-            sprite.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(SpritesPath + card.ToString());
+            var cardController = cardObject.GetComponent<CardController>();
 
-            var pointStr = card.IsHighCard() ? card.HCP.ToString() : string.Empty;
-            var pointText = cardObject.transform.Find("Canvas").transform.Find("PointText");
-            pointText.GetComponent<TextMeshProUGUI>().text = pointStr;
-            pointText.gameObject.SetActive(false);
-            
+            cardController.initialize(card);
 
             posX += deltaX; // 次のカードの位置
             posZ += deltaZ; // 重なり順
@@ -73,5 +65,13 @@ public class HandController : MonoBehaviour
             Destroy(card);
         }
         Cards.Clear();
+    }
+
+    internal void ShowHCPHint()
+    {
+        foreach(var card in Cards)
+        {
+            card.GetComponent<CardController>().setPointDisplayActive(true);
+        }
     }
 }

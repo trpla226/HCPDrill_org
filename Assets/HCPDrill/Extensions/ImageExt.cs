@@ -13,5 +13,4 @@ public static class ImageExt
         var c = image.color;
         image.color = new Color(c.r, c.g, c.b, alpha);
     }
-
 }

@@ -19,6 +19,7 @@ public class GameController : MonoBehaviour
 
     public int InitialTimeLimitSeconds = 30;
     public float wrongAnswerPenaltySeconds = 1f;
+    public float HCPHintSeconds = 8f;
 
 
     // 現在の手札
@@ -131,6 +132,11 @@ public class GameController : MonoBehaviour
         // カウントダウン＆残り時間更新
         session.Update();
         timeLimitAreaController.UpdateTimeLimit(session.CurrentTimeLimitSeconds);
+
+        if(session.elapsedTimeInTurn > HCPHintSeconds)
+        {
+            handController.ShowHCPHint();
+        }
     }
     #endregion
 
